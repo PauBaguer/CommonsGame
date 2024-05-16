@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gym
 from gym import spaces
-from pycolab import ascii_art
+import libs.pycolab.ascii_art as ascii_art
 from CommonsGame.constants import *
 from CommonsGame.utils import buildMap, ObservationToArrayWithRGB
 from CommonsGame.objects import PlayerSprite, AppleDrape, SightDrape, ShotDrape
@@ -14,7 +14,7 @@ class CommonsGame(gym.Env):
     """Custom Environment that follows gym interface"""
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, numAgents, visualRadius, mapSketch=bigMap, fullState=False):
+    def __init__(self, numAgents, visualRadius, mapSketch=bigMap, fullState=False, max_ticks=1000):
         super(CommonsGame, self).__init__()
         self.fullState = fullState
         # Setup spaces
@@ -26,6 +26,7 @@ class CommonsGame(gym.Env):
         self.agentChars = agentChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"[0:numAgents]
         self.mapHeight = len(mapSketch)
         self.mapWidth = len(mapSketch[0])
+        self.max_ticks = max_ticks
         if fullState:
             self.observation_space = spaces.Box(low=0, high=255, shape=(self.mapHeight + 2, self.mapWidth + 2, 3),
                                                 dtype=np.uint8)
@@ -43,7 +44,7 @@ class CommonsGame(gym.Env):
                          + [('.', (750, 750, 0))]  # Yellow beam
                          + [('-', (200, 200, 200))])  # Grey scope
         self.obToImage = ObservationToArrayWithRGB(colour_mapping=colourMap)
-
+        self.ticks = 0
     def buildGame(self):
         agentsOrder = list(self.agentChars)
         random.shuffle(agentsOrder)
@@ -65,6 +66,7 @@ class CommonsGame(gym.Env):
         self.state, nRewards, _ = self._game.play(nActions)
         nObservations, done = self.getObservation()
         nDone = [done] * self.numAgents
+        self.ticks += 1
         return nObservations, nRewards, nDone, nInfo
 
     def reset(self):
@@ -72,6 +74,7 @@ class CommonsGame(gym.Env):
         self._game = self.buildGame()
         self.state, _, _ = self._game.its_showtime()
         nObservations, _ = self.getObservation()
+        self.ticks = 0
         return nObservations
 
     def render(self, mode='human', close=False):
@@ -88,7 +91,10 @@ class CommonsGame(gym.Env):
         plt.clf()
 
     def getObservation(self):
-        done = not (np.logical_or.reduce(self.state.layers['@'], axis=None))
+        if self.ticks < self.max_ticks:
+            done = not (np.logical_or.reduce(self.state.layers['@'], axis=None))
+        else:
+            done = True
         ags = [self._game.things[c] for c in self.agentChars]
         obs = []
         board = self.obToImage(self.state)['RGB'].transpose([1, 2, 0])

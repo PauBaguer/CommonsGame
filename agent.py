@@ -11,14 +11,21 @@ from utils import plot_learning_curve
 
 
 class DeepQNetwork(nn.Module):
-    def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions):
+    def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size):
         super(DeepQNetwork, self).__init__()
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
         self. n_actions = n_actions
+        self.batch_size = batch_size
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
-        self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
+        self.conv = nn.Conv2d(
+            in_channels=3,  # replace with the number of input channels
+            out_channels=6,
+            kernel_size=3,
+            stride=1
+        )
+        self.fc1 = nn.Linear(2166, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         self.fc3 = nn.Linear(self.fc2_dims, self.n_actions)
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
@@ -26,7 +33,11 @@ class DeepQNetwork(nn.Module):
         self.to(self.device)
 
     def forward(self, state):
-        x = F.relu(self.fc1(state))
+        input_tensor = state.permute(0, 3, 1, 2)
+        x = self.conv(input_tensor)
+        x = F.relu(x)
+        x = torch.flatten(x, 1)
+        x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         actions = self.fc3(x)
 
@@ -46,7 +57,7 @@ class Agent:
         self.mem_cntr = 0
 
         self.Q_eval = DeepQNetwork(lr, n_actions=n_actions, input_dims=input_dims,
-                                   fc1_dims=256, fc2_dims=256)
+                                   fc1_dims=32, fc2_dims=32, batch_size=batch_size)
         self.state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.int32)
         self.new_state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.int32)
         self.action_memory = np.zeros(self.mem_size, dtype=np.int32)
@@ -65,7 +76,7 @@ class Agent:
 
     def choose_action(self, observation):
         if np.random.random() > self.epsilon:
-            state = T.tensor(np.array([observation])).to(self.Q_eval.device)
+            state = T.tensor(np.array([observation], dtype=np.float32)).to(self.Q_eval.device)
             actions = self.Q_eval.forward(state)
             action = T.argmax(actions).item()
         else:

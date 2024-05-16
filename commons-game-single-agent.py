@@ -10,18 +10,19 @@ def main():
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=8,
                   eps_end=0.01, input_dims=[21, 21, 3], lr=0.003)
     scores, eps_history = [], []
-    n_games = 500
+    n_games = 5000
 
     for i in range(n_games):
         score = 0
-        done = False
+        done = [False]
         observation = env.reset()
 
-        while not done:
-            action = agent.choose_action(observation)
+        while not done[0]:
+            action = agent.choose_action(observation[0])
             observation_, reward, done, info = env.step([action])
             score += reward[0]
             agent.store_transition(observation[0], action, reward[0], observation_[0], done[0])
+
 
             agent.learn()
             observation = observation_
