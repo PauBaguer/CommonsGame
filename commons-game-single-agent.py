@@ -2,10 +2,11 @@ from agent import Agent
 import gym
 import numpy as np
 from utils import plot_learning_curve
+from CommonsGame.constants import *
 def main():
 
     numAgents = 1
-    env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=10)#, mapSketch=smallMap)
+    env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=10, mapSketch=smallMapV2)#, mapSketch=smallMap)
 
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=8,
                   eps_end=0.01, input_dims=[21, 21, 3], lr=0.003)

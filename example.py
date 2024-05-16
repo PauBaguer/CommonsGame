@@ -1,10 +1,10 @@
 import numpy as np
 import gym
 from CommonsGame.constants import *
+import time
+numAgents = 1
 
-numAgents = 11
-
-env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=10)#, mapSketch=smallMap)
+env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=10, mapSketch=smallMapV2)#, mapSketch=smallMap)
 env.reset()
 for t in range(10000):
     nActions = np.random.randint(low=0, high=env.action_space.n, size=(numAgents,)).tolist()
