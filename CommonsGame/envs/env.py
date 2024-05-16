@@ -12,7 +12,10 @@ from CommonsGame.objects import PlayerSprite, AppleDrape, SightDrape, ShotDrape
 
 class CommonsGame(gym.Env):
     """Custom Environment that follows gym interface"""
-    metadata = {'render.modes': ['human']}
+    metadata = {'render_modes': ['human', 'rgb_array'],
+                'render_fps': 50
+
+                }
 
     def __init__(self, numAgents, visualRadius, mapSketch=bigMap, fullState=False, max_ticks=1000):
         super(CommonsGame, self).__init__()
@@ -75,20 +78,27 @@ class CommonsGame(gym.Env):
         self.state, _, _ = self._game.its_showtime()
         nObservations, _ = self.getObservation()
         self.ticks = 0
-        return nObservations
+        return (nObservations, {})
 
     def render(self, mode='human', close=False):
-        # Render the environment to the screen
-        board = self.obToImage(self.state)['RGB'].transpose([1, 2, 0])
-        board = board[self.numPadPixels:self.numPadPixels + self.mapHeight + 2,
-                self.numPadPixels:self.numPadPixels + self.mapWidth + 2, :]
-        plt.figure(1)
-        plt.imshow(board)
-        plt.axis("off")
-        plt.show(block=False)
-        # plt.show()
-        plt.pause(.05)
-        plt.clf()
+        if mode == 'human':
+            # Render the environment to the screen
+            board = self.obToImage(self.state)['RGB'].transpose([1, 2, 0])
+            board = board[self.numPadPixels:self.numPadPixels + self.mapHeight + 2,
+                    self.numPadPixels:self.numPadPixels + self.mapWidth + 2, :]
+            plt.figure(1)
+            plt.imshow(board)
+            plt.axis("off")
+            plt.show(block=False)
+            # plt.show()
+            plt.pause(.05)
+            plt.clf()
+
+        if mode == 'rgb_array':
+            board = self.obToImage(self.state)['RGB'].transpose([1, 2, 0])
+            board = board[self.numPadPixels:self.numPadPixels + self.mapHeight + 2,
+                    self.numPadPixels:self.numPadPixels + self.mapWidth + 2, :]
+            return board
 
     def getObservation(self):
         if self.ticks < self.max_ticks:

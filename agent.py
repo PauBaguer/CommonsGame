@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
+import os
 
 import gym
 from utils import plot_learning_curve
@@ -13,6 +14,8 @@ from utils import plot_learning_curve
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size):
         super(DeepQNetwork, self).__init__()
+        cpus=os.cpu_count()
+        T.set_num_threads(cpus)
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
@@ -32,6 +35,8 @@ class DeepQNetwork(nn.Module):
         self.loss = nn.MSELoss()
         self.to(self.device)
 
+        print(f"Using device: {self.device}, n_procs: {T.get_num_threads()}")
+
     def forward(self, state):
         input_tensor = state.permute(0, 3, 1, 2)
         x = self.conv(input_tensor)
@@ -45,7 +50,7 @@ class DeepQNetwork(nn.Module):
 
 class Agent:
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions,
-                 max_mem_size=100_000, eps_end=0.05, eps_dec=5e-4):
+                 max_mem_size=100_000, eps_end=0.05, eps_dec=1e-5):
         self.gamma = gamma
         self.epsilon = epsilon
         self.eps_min = eps_end
