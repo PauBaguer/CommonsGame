@@ -39,20 +39,45 @@ sudo apt-get install imagemagick
 Open file in CLI with:
 xgd-open <filename>
 """
-def save_frames_as_gif(frames, path='./', filename='gym_animation.gif'):
-
-    #Mess with this to change frame size
-    time.sleep(10)
-
+def save_frames_as_gif(frames, t2, path='./', filename='gym_animation.gif'):
     fig = plt.figure(2, figsize=(frames[0].shape[1] / 32, frames[0].shape[0] / 32), dpi=512)
     fig.suptitle('tick: 0', fontsize=3, fontweight='bold', fontfamily='monospace')
-    print(frames[0].shape)
     patch = plt.imshow(frames[0])
     plt.axis('off')
 
     def animate(i):
         patch.set_data(frames[i])
         fig.suptitle(f'tick: {i}', fontsize=3, fontweight='bold')
+
+    anim = animation.FuncAnimation(fig, animate, frames = len(frames), interval=50)
+    anim.save(path + filename, writer='imagemagick', fps=60)
+    print("Saved gif!")
+    t2.start()
+
+
+def save_frames_as_gif_big_map(frames, t2, path='./', filename='gym_animation.gif'):
+    fig = plt.figure(2, figsize=(frames[0].shape[1] / 64, frames[0].shape[0] / 64), dpi=512)
+    fig.suptitle('tick: 0', fontsize=3, fontweight='bold', fontfamily='monospace')
+    patch = plt.imshow(frames[0])
+    plt.axis('off')
+
+    def animate(i):
+        patch.set_data(frames[i])
+        fig.suptitle(f'tick: {i}', fontsize=3, fontweight='bold')
+
+    anim = animation.FuncAnimation(fig, animate, frames = len(frames), interval=50)
+    anim.save(path + filename, writer='imagemagick', fps=60)
+    print("Saved gif!")
+    t2.start()
+def save_observations_as_gif(frames, path='./', filename='gym_animation.gif'):
+    fig = plt.figure(3, figsize=(frames[0].shape[1] / 32, frames[0].shape[0] / 32), dpi=512)
+    fig.suptitle('0', fontsize=3, fontweight='bold', fontfamily='monospace')
+    patch = plt.imshow(frames[0])
+    plt.axis('off')
+
+    def animate(i):
+        patch.set_data(frames[i])
+        fig.suptitle(f'{i}', fontsize=3, fontweight='bold')
 
     anim = animation.FuncAnimation(fig, animate, frames = len(frames), interval=50)
     anim.save(path + filename, writer='imagemagick', fps=60)

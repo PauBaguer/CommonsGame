@@ -12,7 +12,7 @@ from utils import plot_learning_curve
 
 
 class DeepQNetwork(nn.Module):
-    def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size):
+    def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size, out_channels=6, kernel_size=3, stride=1):
         super(DeepQNetwork, self).__init__()
         cpus=os.cpu_count()
         T.set_num_threads(cpus)
@@ -23,12 +23,16 @@ class DeepQNetwork(nn.Module):
         self.batch_size = batch_size
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
         self.conv = nn.Conv2d(
-            in_channels=3,  # replace with the number of input channels
-            out_channels=6,
-            kernel_size=3,
-            stride=1
+            in_channels=3,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride
         )
-        self.fc1 = nn.Linear(2166, self.fc1_dims)
+        out_size_height = np.floor(( input_dims[0] - kernel_size ) / stride) + 1
+        out_size_width = np.floor((input_dims[1] - kernel_size) / stride) + 1
+        conf_out_dims = int(out_size_width * out_size_height * out_channels)
+
+        self.fc1 = nn.Linear(conf_out_dims, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         self.fc3 = nn.Linear(self.fc2_dims, self.n_actions)
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
