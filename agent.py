@@ -14,8 +14,9 @@ from utils import plot_learning_curve
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size, out_channels=6, kernel_size=3, stride=1):
         super(DeepQNetwork, self).__init__()
-        cpus=os.cpu_count()
+        cpus = int(os.cpu_count() / 2)
         T.set_num_threads(cpus)
+
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
@@ -122,46 +123,3 @@ class Agent:
         self.Q_eval.optimizer.step()
 
         self.epsilon = self.epsilon - self.eps_dec if self.epsilon > self.eps_min else self.eps_min
-
-
-
-def test_agent():
-    env = gym.make('LunarLander-v2',
-                   enable_wind=False,
-                   wind_power=0.0,
-                   turbulence_power=0.0)
-
-    agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
-                  eps_end=0.01, input_dims=[8], lr=0.003)
-    scores, eps_history = [], []
-    n_games = 500
-
-    for i in range(n_games):
-        score = 0
-        done = False
-        observation, _ = env.reset()
-
-        while not done:
-            action = agent.choose_action(observation)
-            observation_, reward, done, truncated,  info = env.step(action)
-            score += reward
-            agent.store_transition(observation, action, reward, observation_, done)
-
-            agent.learn()
-            observation = observation_
-        scores.append(score)
-        eps_history.append(agent.epsilon)
-
-        avg_score = np.mean(scores[-100:])
-
-        print('Episode {} Average Score: {:.2f} Epsilon {:.2f}'.format(i, avg_score, agent.epsilon))
-
-    x = [i+1 for i in range(n_games)]
-    filename = 'lunar_lander_test.png'
-    plot_learning_curve(x, scores, eps_history, filename)
-
-
-
-if __name__ == '__main__':
-    test_agent()
-

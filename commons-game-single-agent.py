@@ -52,13 +52,13 @@ def main():
         if episode in save_episodes_as_gifs:
             # PLOT LEARNING CURVE
             x = [j + 1 for j in range(episode)]
-            path = "./Results/multi-agent/learning-curves/"
+            path = "./Results/single-agent/learning-curves/"
             filename = f'learning-curve-episode-{episode}.png'
             plot_learning_curve(x, scores, eps_history, path + filename)
 
-            path = "./Results/multi-agent/gifs/"
+            path = "./Results/single-agent/gifs/"
             filename = f"gif-episode-{episode}.gif"
-            path_obs = "./Results/multi-agent/gifs/"
+            path_obs = "./Results/single-agent/gifs/"
             filename_obs = f"gif-agent0-episode-{episode}.gif"
 
             t2 = threading.Thread(target=save_observations_as_gif, name="Saving gif",

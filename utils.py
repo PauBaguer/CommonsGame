@@ -6,6 +6,7 @@ import time
 
 def plot_learning_curve(x, scores, epsilons, filename):
     fig = plt.figure(1)
+    fig.clf()
     ax = fig.add_subplot(111, label="1")
     ax2 = fig.add_subplot(111, label="2", frame_on=False)
 
@@ -76,6 +77,8 @@ def save_observations_as_gif(frames, path='./', filename='gym_animation.gif'):
     plt.axis('off')
 
     def animate(i):
+        if type(frames[i]) == type(None):
+            return
         patch.set_data(frames[i])
         fig.suptitle(f'{i}', fontsize=3, fontweight='bold')
 
