@@ -6,10 +6,6 @@ import torch.optim as optim
 import numpy as np
 import os
 
-import gym
-from utils import plot_learning_curve
-
-
 
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size, out_channels=6, kernel_size=3, stride=1):
@@ -23,47 +19,40 @@ class DeepQNetwork(nn.Module):
         self. n_actions = n_actions
         self.batch_size = batch_size
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
-        self.conv1 = nn.Conv2d(
-            in_channels=3,
-            out_channels=128,
-            kernel_size=kernel_size,
-            stride=stride
-        )
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.conv1 = nn.Conv2d(in_channels=input_dims[2], out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.conv3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1)
 
-        self.conv2 = nn.Conv2d(
-            in_channels=128,
-            out_channels=64,
-            kernel_size=kernel_size,
-            stride=stride
-        )
-        out_size_height = np.floor(( input_dims[0] - kernel_size ) / stride) + 1
-        out_size_width = np.floor((input_dims[1] - kernel_size) / stride) + 1
-        conf_out_dims = int(out_size_width * out_size_height * out_channels)
-
-        self.fc1 = nn.Linear(64, self.fc1_dims)
-        self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
-        self.fc3 = nn.Linear(self.fc2_dims, self.n_actions)
+        # Define fully connected layers
+        self.fc1 = nn.Linear(15488, 512)
+        self.fc2 = nn.Linear(512, 256)
+        self.out = nn.Linear(256, n_actions)
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
         self.loss = nn.MSELoss()
         self.to(self.device)
 
         print(f"Using device: {self.device}, n_procs: {T.get_num_threads()}")
 
-    def forward(self, state):
-        input_tensor = state.permute(0, 3, 1, 2)
-        x = self.conv1(input_tensor)
-        x = F.relu(x)
-        x = self.pool(x)
-        x = self.conv2(x)
-        x = F.relu(x)
-        x = self.pool(x)
-        x = torch.flatten(x, 1)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        actions = self.fc3(x)
 
-        return actions
+
+    def forward(self, x):
+        # Pass through convolutional layers
+        x = x.permute(0, 3, 1, 2)
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
+
+        # Flatten the output
+        x = torch.flatten(x,1)
+
+        # Pass through fully connected layers
+        x = F.relu(self.fc1(x))
+        x = F.dropout(x, p=0.5, training=self.training)
+        x = F.relu(self.fc2(x))
+        x = F.dropout(x, p=0.5, training=self.training)
+
+        # Output layer
+        return self.out(x)
 
 class Agent:
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions,

@@ -1,6 +1,9 @@
+import numpy as np
+
 
 class SocialMetrics:
-    def __init__(self):
+    def __init__(self, num_agents):
+        self.num_agents = num_agents
         self.observations = []
         self.rewards = []
 
@@ -17,22 +20,44 @@ class SocialMetrics:
         self.compute_equality()
         self.compute_sustainability()
         self.compute_peace()
-    def compute_utilitarian_eff(self):
-        eff = 0
 
-        self.utilitarian_eff = eff
+        self.observations = []
+        self.rewards = []
+    def compute_utilitarian_eff(self):
+        total_rewards = sum(sum(agent_rewards) for agent_rewards in self.rewards)
+        self.utilitarian_eff = total_rewards / self.num_agents
 
     def compute_equality(self):
-        eq = 0
+        rewards = np.array(self.rewards)
+        agent_rewards = np.sum(rewards, axis=0)
+        gini = gini_coefficient(agent_rewards)
+        self.equality = 1 - gini
 
-        self.equality = eq
 
     def compute_sustainability(self):
-        sus = 0
+        times = 0
+        for i in range(len(self.rewards)):
+            ts = np.array([1 for r in self.rewards[i] if r > 0]) * i
+            sum_t = np.sum(ts)
+            times += sum_t
 
-        self.sustainability = sus
+        self.sustainability = times / len(self.rewards)
 
     def compute_peace(self):
-        p = 0
+        total_steps = len(self.observations)
+        tagged_steps = 0
+        for obs_step in self.observations:
+            tagged_steps += sum([1 for o in obs_step if type(o) == type(None)])
 
-        self.peace = p
+        self.peace = (total_steps * self.num_agents - tagged_steps) / self.num_agents
+
+def gini_coefficient(x):
+    """
+    Calculate the Gini coefficient of a numpy array.
+    :param x: numpy array of rewards.
+    :return: Gini coefficient.
+    """
+    diffsum = 0
+    for i, xi in enumerate(x[:-1], 1):
+        diffsum += np.sum(np.abs(xi - x[i:]))
+    return diffsum / (len(x)**2 * np.mean(x))

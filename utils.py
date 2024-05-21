@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation
 import matplotlib.pyplot as plt
+from socialmetrics import SocialMetrics
 import time
 
 def plot_learning_curve(x, scores, epsilons, filename):
@@ -31,7 +32,40 @@ def plot_learning_curve(x, scores, epsilons, filename):
     fig.savefig(filename)
     print("Plotted learning curve!")
 
+def plot_social_metrics(x, social_metrics_history : [SocialMetrics], filename):
+    fig, ax = plt.subplots(4, 1, sharex=True, figsize=(6,10))
+    utilitarian_eff = [m.utilitarian_eff for m in social_metrics_history]
+    equality = [m.equality for m in social_metrics_history]
+    sustainability = [m.sustainability for m in social_metrics_history]
+    peace = [m.peace for m in social_metrics_history]
+    
+    utilitarian_eff = [np.mean(utilitarian_eff[u - 10:u]) if 10 <= u else utilitarian_eff[u] for u in range(len(utilitarian_eff))]
+    equality = [np.mean(equality[u - 10:u]) if 10 <= u else equality[u] for u in range(len(equality))]
+    sustainability = [np.mean(sustainability[u - 10:u]) if 10 <= u else sustainability[u] for u in range(len(sustainability))]
+    peace = [np.mean(peace[u - 10:u]) if 10 <= u else peace[u] for u in range(len(peace))]
 
+
+    ax[0].plot(x, utilitarian_eff)
+    ax[1].plot(x, sustainability)
+    ax[2].plot(x, equality)
+    ax[3].plot(x, peace)
+
+    ax[0].set_ylabel('Efficiency (U)', fontsize=14)
+    ax[1].set_ylabel('Sustainability (S)', fontsize=14)
+    ax[2].set_ylabel('Equality (E)', fontsize=14)
+    ax[3].set_ylabel('Peacefulness (P)', fontsize=14)
+
+    ax[3].set_xlabel('Episode', fontsize=14)
+
+    ax[0].yaxis.grid(linestyle='--')
+    ax[1].yaxis.grid(linestyle='--')
+    ax[2].yaxis.grid(linestyle='--')
+    ax[3].yaxis.grid(linestyle='--')
+
+
+    fig.tight_layout()
+    fig.savefig(filename)
+    print("plotted social metrics!")
 
 
 """
@@ -41,7 +75,7 @@ Open file in CLI with:
 xgd-open <filename>
 """
 def save_frames_as_gif(frames, t2, path='./', filename='gym_animation.gif'):
-    fig = plt.figure(2, figsize=(frames[0].shape[1] / 32, frames[0].shape[0] / 32), dpi=512)
+    fig = plt.figure(8, figsize=(frames[0].shape[1] / 32, frames[0].shape[0] / 32), dpi=512)
     fig.suptitle('tick: 0', fontsize=3, fontweight='bold', fontfamily='monospace')
     patch = plt.imshow(frames[0])
     plt.axis('off')

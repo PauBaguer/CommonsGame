@@ -1,12 +1,13 @@
-import logging
+import logging,os
 import time
 
 from agent import Agent
 import gym
 import numpy as np
-from utils import plot_learning_curve, save_frames_as_gif_big_map, save_observations_as_gif
+from utils import plot_learning_curve, save_frames_as_gif_big_map, save_observations_as_gif, plot_social_metrics
 from CommonsGame.constants import *
 import threading
+from socialmetrics import SocialMetrics
 
 
 def handle_agent_choose_action(agent, observation):
@@ -26,19 +27,28 @@ def handle_agent_learn(agent, observation, observation_, action, reward, done):
     agent.store_transition(observation, action, reward, observation_, done)
     agent.learn()
 
-def do_plots_and_gifs(episode, frames, obs, scores, eps_history):
+def do_plots_and_gifs(base_path, episode, frames, obs, scores, eps_history, social_metrics_history):
     # PLOT LEARNING CURVE
     x = [j + 1 for j in range(episode)]
-    path = "./Results/multi-agent/learning-curves/"
+    path = f"{base_path}/learning-curves/"
+    os.makedirs(path, exist_ok=True)
     filename = f'learning-curve-episode-{episode}.png'
     plot_learning_curve(x, scores, eps_history, path + filename)
 
-    path = "./Results/multi-agent/gifs/"
+    # Plot social metrics
+    path = f"{base_path}/social-metrics/"
+    os.makedirs(path, exist_ok=True)
+    filename = f'social-metrics-episode-{episode}.png'
+    plot_social_metrics(x, social_metrics_history, path + filename)
+
+    # Render gifs
+    path = f"{base_path}/gifs/"
+    os.makedirs(path, exist_ok=True)
     filename = f"gif-episode-{episode}.gif"
-    path_obs = "./Results/multi-agent/gifs/"
+
     filename_obs = f"gif-agent0-episode-{episode}.gif"
 
-    t2 = threading.Thread(target=save_observations_as_gif, name="Saving gif", args=(obs, path_obs, filename_obs))
+    t2 = threading.Thread(target=save_observations_as_gif, name="Saving gif", args=(obs, path, filename_obs))
     t2.daemon = True
 
     t = threading.Thread(target=save_frames_as_gif_big_map, name="Saving gif", args=(frames, t2, path, filename))
@@ -47,9 +57,10 @@ def do_plots_and_gifs(episode, frames, obs, scores, eps_history):
 
     print("Started gif saving threads")
 
-def run_episode(episode, env, agents, numAgents, save_episodes_as_gifs, scores, eps_history):
+def run_episode(base_path, episode, env, agents, numAgents, save_episodes_as_gifs, scores, eps_history, social_metrics_history):
     frames = []
     obs = []
+    social_metrics = SocialMetrics(numAgents)
     score = 0
     done = [False]
     observations, _ = env.reset()
@@ -66,6 +77,8 @@ def run_episode(episode, env, agents, numAgents, save_episodes_as_gifs, scores, 
 
         # Actions are played, rewards are received.
         observations_, rewards, done, info = env.step(actions)
+        social_metrics.add_step(observations_, rewards)
+
         score += rewards[0]
 
         # Save observation of agent 0 to do gif
@@ -80,6 +93,8 @@ def run_episode(episode, env, agents, numAgents, save_episodes_as_gifs, scores, 
         observations = observations_
 
     # Save scores
+    social_metrics.compute_metrics()
+    social_metrics_history.append(social_metrics)
     scores.append(score)
     eps_history.append(agents[0].epsilon)
 
@@ -87,25 +102,28 @@ def run_episode(episode, env, agents, numAgents, save_episodes_as_gifs, scores, 
 
     print('Episode {} Average Score: {:.2f} Epsilon {:.2f}'.format(episode, avg_score, agents[0].epsilon))
     if episode in save_episodes_as_gifs:
-        do_plots_and_gifs(episode, frames, obs, scores, eps_history)
+        do_plots_and_gifs(base_path, episode, frames, obs, scores, eps_history, social_metrics_history)
 
 def main():
+    base_path = './ResultsSocialMetrics/multi-agent'
+    os.makedirs(base_path, exist_ok=True)
+
     # Hyperparameters
     n_episodes = 10050
-    save_episodes_as_gifs = [10, 500, 5000, 10000]
-    numAgents = 10
+    save_episodes_as_gifs = [10, 500, 750, 1000, 5000, 10000]
+    numAgents = 12
     visualRadius = 5
 
     input_dims = [visualRadius*2+1, visualRadius*2+1, 3]
     env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=visualRadius, mapSketch=bigMap)#, mapSketch=smallMap)
     gym.logger.setLevel(logging.CRITICAL)
-    agents = [Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=8,
+    agents = [Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=8,
                   eps_end=0.01, input_dims=input_dims, lr=0.003)
               for _ in range(numAgents)]
-    scores, eps_history = [], []
+    scores, eps_history, social_metrics_history = [], [], []
 
     for episode in range(1, n_episodes + 1):
-        run_episode(episode, env, agents, numAgents, save_episodes_as_gifs, scores, eps_history)
+        run_episode(base_path, episode, env, agents, numAgents, save_episodes_as_gifs, scores, eps_history, social_metrics_history)
 
 
 
