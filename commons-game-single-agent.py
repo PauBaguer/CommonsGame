@@ -1,14 +1,13 @@
 import logging
 import os
-import time
 
-from agent_conv3 import Agent
+from models.agent_conv3 import Agent
 import gym
 import numpy as np
-from utils import plot_learning_curve, save_frames_as_gif, save_observations_as_gif, plot_social_metrics
+from libs.utils import plot_learning_curve, save_frames_as_gif, save_observations_as_gif, plot_social_metrics
 from CommonsGame.constants import *
 import threading
-from socialmetrics import SocialMetrics
+from libs.socialmetrics import SocialMetrics
 
 
 def handle_agent_choose_action(agent, observation):
