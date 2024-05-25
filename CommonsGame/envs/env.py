@@ -117,6 +117,7 @@ class CommonsGame(gym.Env):
                     ob = ob[self.numPadPixels:self.numPadPixels + self.mapHeight + 2,
                          self.numPadPixels:self.numPadPixels + self.mapWidth + 2, :]
                 else:
+
                     ob = np.copy(board[
                                  a.position[0] - self.sightRadius:a.position[0] + self.sightRadius + 1,
                                  a.position[1] - self.sightRadius:a.position[1] + self.sightRadius + 1, :])

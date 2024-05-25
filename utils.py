@@ -39,10 +39,12 @@ def plot_social_metrics(x, social_metrics_history : [SocialMetrics], filename):
     sustainability = [m.sustainability for m in social_metrics_history]
     peace = [m.peace for m in social_metrics_history]
     
-    utilitarian_eff = [np.mean(utilitarian_eff[u - 10:u]) if 10 <= u else utilitarian_eff[u] for u in range(len(utilitarian_eff))]
-    equality = [np.mean(equality[u - 10:u]) if 10 <= u else equality[u] for u in range(len(equality))]
-    sustainability = [np.mean(sustainability[u - 10:u]) if 10 <= u else sustainability[u] for u in range(len(sustainability))]
-    peace = [np.mean(peace[u - 10:u]) if 10 <= u else peace[u] for u in range(len(peace))]
+    rolling_avg = 100
+    
+    utilitarian_eff = [np.mean(utilitarian_eff[u - rolling_avg:u]) if rolling_avg <= u else utilitarian_eff[u] for u in range(len(utilitarian_eff))]
+    equality = [np.mean(equality[u - rolling_avg:u]) if rolling_avg <= u else equality[u] for u in range(len(equality))]
+    sustainability = [np.mean(sustainability[u - rolling_avg:u]) if rolling_avg <= u else sustainability[u] for u in range(len(sustainability))]
+    peace = [np.mean(peace[u - rolling_avg:u]) if rolling_avg <= u else peace[u] for u in range(len(peace))]
 
 
     ax[0].plot(x, utilitarian_eff)

@@ -182,7 +182,8 @@ class AppleDrape(pythings.Drape):
             agentsMap[things[self.agentChars[i]].position[0], things[self.agentChars[i]].position[1]] = False
         the_plot.add_reward(rewards)
         # Matrix of local stock of apples
-        kernel = np.array([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]])
+        #kernel = np.array([[1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]])
+        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1,]])
         L = convolve(self.curtain[self.numPadPixels + 1:-self.numPadPixels - 1,
                      self.numPadPixels + 1:-self.numPadPixels - 1] * 1, kernel, mode='constant')
         probs = np.zeros(L.shape)

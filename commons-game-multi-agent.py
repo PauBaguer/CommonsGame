@@ -105,7 +105,7 @@ def run_episode(base_path, episode, env, agents, numAgents, save_episodes_as_gif
         do_plots_and_gifs(base_path, episode, frames, obs, scores, eps_history, social_metrics_history)
 
 def main():
-    base_path = './ResultsSocialMetrics/multi-agent'
+    base_path = './ResultsSocialMetricsSmallKernel/multi-agent'
     os.makedirs(base_path, exist_ok=True)
 
     # Hyperparameters
@@ -117,8 +117,8 @@ def main():
     input_dims = [visualRadius*2+1, visualRadius*2+1, 3]
     env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=visualRadius, mapSketch=bigMap)#, mapSketch=smallMap)
     gym.logger.setLevel(logging.CRITICAL)
-    agents = [Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=8,
-                  eps_end=0.01, input_dims=input_dims, lr=0.003)
+    agents = [Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=8,
+                  eps_end=0.1, input_dims=input_dims, lr=0.003)
               for _ in range(numAgents)]
     scores, eps_history, social_metrics_history = [], [], []
 
