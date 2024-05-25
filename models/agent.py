@@ -6,10 +6,6 @@ import torch.optim as optim
 import numpy as np
 import os
 
-import gym
-from utils import plot_learning_curve
-
-
 
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions, batch_size, out_channels=6, kernel_size=3, stride=1):
