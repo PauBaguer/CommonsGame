@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation
 import matplotlib.pyplot as plt
-from socialmetrics import SocialMetrics
+from libs.socialmetrics import SocialMetrics
+import pandas as pd
 import time
 
 def plot_learning_curve(x, scores, epsilons, filename):
@@ -38,19 +39,16 @@ def plot_social_metrics(x, social_metrics_history : [SocialMetrics], filename):
     equality = [m.equality for m in social_metrics_history]
     sustainability = [m.sustainability for m in social_metrics_history]
     peace = [m.peace for m in social_metrics_history]
-    
-    rolling_avg = 100
-    
-    utilitarian_eff = [np.mean(utilitarian_eff[u - rolling_avg:u]) if rolling_avg <= u else utilitarian_eff[u] for u in range(len(utilitarian_eff))]
-    equality = [np.mean(equality[u - rolling_avg:u]) if rolling_avg <= u else equality[u] for u in range(len(equality))]
-    sustainability = [np.mean(sustainability[u - rolling_avg:u]) if rolling_avg <= u else sustainability[u] for u in range(len(sustainability))]
-    peace = [np.mean(peace[u - rolling_avg:u]) if rolling_avg <= u else peace[u] for u in range(len(peace))]
 
 
-    ax[0].plot(x, utilitarian_eff)
-    ax[1].plot(x, sustainability)
-    ax[2].plot(x, equality)
-    ax[3].plot(x, peace)
+    window_size = 100
+    for i, m in enumerate([utilitarian_eff, sustainability, equality, peace]):
+        df = pd.DataFrame(m, columns=['value'])
+        df['rolling_avg'] = df['value'].rolling(window=window_size, min_periods=25).mean()
+
+        ax[i].plot(df.index, df['value'], alpha=0.5)
+        ax[i].plot(df.index, df['rolling_avg'])
+
 
     ax[0].set_ylabel('Efficiency (U)', fontsize=14)
     ax[1].set_ylabel('Sustainability (S)', fontsize=14)
@@ -93,7 +91,7 @@ def save_frames_as_gif(frames, t2, path='./', filename='gym_animation.gif'):
 
 
 def save_frames_as_gif_big_map(frames, t2, path='./', filename='gym_animation.gif'):
-    fig = plt.figure(2, figsize=(frames[0].shape[1] / 64, frames[0].shape[0] / 64), dpi=512)
+    fig = plt.figure(8, figsize=(frames[0].shape[1] / 64, frames[0].shape[0] / 64), dpi=512)
     fig.suptitle('tick: 0', fontsize=3, fontweight='bold', fontfamily='monospace')
     patch = plt.imshow(frames[0])
     plt.axis('off')

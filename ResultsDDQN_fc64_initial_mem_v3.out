@@ -1,0 +1,121 @@
+./ResultsDDQN_fc64_initial_mem_v3/multi-agent
+Filling initial replay memory.
+/home/i2cat/ml-projects/CommonsGame/venv/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:225: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(done, (bool, np.bool8)):
+Episode 1 Score: 15.00 Average Score: 15.00 Epsilon 0.99
+Plotted learning curve!
+plotted social metrics!
+Started gif saving threads
+Episode 2 Score: 21.00 Average Score: 18.00 Epsilon 0.98
+Episode 3 Score: 23.00 Average Score: 19.67 Epsilon 0.97
+Episode 4 Score: 33.00 Average Score: 23.00 Epsilon 0.96
+Saved gif!
+Episode 5 Score: 13.00 Average Score: 21.00 Epsilon 0.95
+Episode 6 Score: 13.00 Average Score: 19.67 Epsilon 0.94
+Saved gif!
+Episode 7 Score: 24.00 Average Score: 20.29 Epsilon 0.93
+Episode 8 Score: 23.00 Average Score: 20.62 Epsilon 0.92
+Episode 9 Score: 27.00 Average Score: 21.33 Epsilon 0.91
+Episode 10 Score: 24.00 Average Score: 21.60 Epsilon 0.90
+Plotted learning curve!
+plotted social metrics!
+Started gif saving threads
+Episode 11 Score: 25.00 Average Score: 21.91 Epsilon 0.90
+Episode 12 Score: 57.00 Average Score: 24.83 Epsilon 0.89
+Episode 13 Score: 24.00 Average Score: 24.77 Epsilon 0.88
+Saved gif!
+Episode 14 Score: 39.00 Average Score: 25.79 Epsilon 0.87
+Episode 15 Score: 32.00 Average Score: 26.20 Epsilon 0.86
+Saved gif!
+Episode 16 Score: 57.00 Average Score: 28.12 Epsilon 0.85
+Episode 17 Score: 40.00 Average Score: 28.82 Epsilon 0.84
+Episode 18 Score: 24.00 Average Score: 28.56 Epsilon 0.83
+Episode 19 Score: 42.00 Average Score: 29.26 Epsilon 0.83
+Episode 20 Score: 21.00 Average Score: 28.85 Epsilon 0.82
+Episode 21 Score: 44.00 Average Score: 29.57 Epsilon 0.81
+Episode 22 Score: 50.00 Average Score: 30.50 Epsilon 0.80
+Episode 23 Score: 64.00 Average Score: 31.96 Epsilon 0.79
+Episode 24 Score: 30.00 Average Score: 31.88 Epsilon 0.79
+Episode 25 Score: 45.00 Average Score: 32.40 Epsilon 0.78
+Episode 26 Score: 42.00 Average Score: 32.77 Epsilon 0.77
+Episode 27 Score: 56.00 Average Score: 33.63 Epsilon 0.76
+Episode 28 Score: 50.00 Average Score: 34.21 Epsilon 0.75
+Episode 29 Score: 66.00 Average Score: 35.31 Epsilon 0.75
+Episode 30 Score: 39.00 Average Score: 35.43 Epsilon 0.74
+Episode 31 Score: 34.00 Average Score: 35.39 Epsilon 0.73
+Episode 32 Score: 43.00 Average Score: 35.62 Epsilon 0.72
+Episode 33 Score: 35.00 Average Score: 35.61 Epsilon 0.72
+Episode 34 Score: 41.00 Average Score: 35.76 Epsilon 0.71
+Episode 35 Score: 52.00 Average Score: 36.23 Epsilon 0.70
+Episode 36 Score: 42.00 Average Score: 36.39 Epsilon 0.70
+Episode 37 Score: 42.00 Average Score: 36.54 Epsilon 0.69
+Episode 38 Score: 43.00 Average Score: 36.71 Epsilon 0.68
+Episode 39 Score: 63.00 Average Score: 37.38 Epsilon 0.68
+Episode 40 Score: 39.00 Average Score: 37.42 Epsilon 0.67
+Episode 41 Score: 43.00 Average Score: 37.56 Epsilon 0.66
+Episode 42 Score: 25.00 Average Score: 37.26 Epsilon 0.66
+Episode 43 Score: 39.00 Average Score: 37.30 Epsilon 0.65
+Episode 44 Score: 40.00 Average Score: 37.36 Epsilon 0.64
+Episode 45 Score: 46.00 Average Score: 37.56 Epsilon 0.64
+Episode 46 Score: 43.00 Average Score: 37.67 Epsilon 0.63
+Episode 47 Score: 62.00 Average Score: 38.19 Epsilon 0.62
+Episode 48 Score: 47.00 Average Score: 38.38 Epsilon 0.62
+Episode 49 Score: 36.00 Average Score: 38.33 Epsilon 0.61
+Episode 50 Score: 48.00 Average Score: 38.52 Epsilon 0.61
+Episode 51 Score: 41.00 Average Score: 38.57 Epsilon 0.60
+Episode 52 Score: 51.00 Average Score: 38.81 Epsilon 0.59
+Episode 53 Score: 55.00 Average Score: 39.11 Epsilon 0.59
+Episode 54 Score: 50.00 Average Score: 39.31 Epsilon 0.58
+Episode 55 Score: 40.00 Average Score: 39.33 Epsilon 0.58
+Episode 56 Score: 37.00 Average Score: 39.29 Epsilon 0.57
+Episode 57 Score: 30.00 Average Score: 39.12 Epsilon 0.56
+Episode 58 Score: 51.00 Average Score: 39.33 Epsilon 0.56
+Episode 59 Score: 43.00 Average Score: 39.39 Epsilon 0.55
+Episode 60 Score: 25.00 Average Score: 39.15 Epsilon 0.55
+Episode 61 Score: 56.00 Average Score: 39.43 Epsilon 0.54
+Episode 62 Score: 53.00 Average Score: 39.65 Epsilon 0.54
+Episode 63 Score: 36.00 Average Score: 39.59 Epsilon 0.53
+Episode 64 Score: 44.00 Average Score: 39.66 Epsilon 0.53
+Episode 65 Score: 44.00 Average Score: 39.72 Epsilon 0.52
+Episode 66 Score: 20.00 Average Score: 39.42 Epsilon 0.52
+Episode 67 Score: 26.00 Average Score: 39.22 Epsilon 0.51
+Episode 68 Score: 46.00 Average Score: 39.32 Epsilon 0.50
+Episode 69 Score: 16.00 Average Score: 38.99 Epsilon 0.50
+Episode 70 Score: 57.00 Average Score: 39.24 Epsilon 0.49
+Episode 71 Score: 38.00 Average Score: 39.23 Epsilon 0.49
+Episode 72 Score: 54.00 Average Score: 39.43 Epsilon 0.48
+Episode 73 Score: 51.00 Average Score: 39.59 Epsilon 0.48
+Episode 74 Score: 61.00 Average Score: 39.88 Epsilon 0.48
+Episode 75 Score: 33.00 Average Score: 39.79 Epsilon 0.47
+Episode 76 Score: 34.00 Average Score: 39.71 Epsilon 0.47
+Episode 77 Score: 43.00 Average Score: 39.75 Epsilon 0.46
+Episode 78 Score: 54.00 Average Score: 39.94 Epsilon 0.46
+Episode 79 Score: 26.00 Average Score: 39.76 Epsilon 0.45
+Episode 80 Score: 48.00 Average Score: 39.86 Epsilon 0.45
+Episode 81 Score: 42.00 Average Score: 39.89 Epsilon 0.44
+Episode 82 Score: 44.00 Average Score: 39.94 Epsilon 0.44
+Episode 83 Score: 21.00 Average Score: 39.71 Epsilon 0.43
+Episode 84 Score: 31.00 Average Score: 39.61 Epsilon 0.43
+Episode 85 Score: 37.00 Average Score: 39.58 Epsilon 0.43
+Episode 86 Score: 43.00 Average Score: 39.62 Epsilon 0.42
+Episode 87 Score: 36.00 Average Score: 39.57 Epsilon 0.42
+Episode 88 Score: 57.00 Average Score: 39.77 Epsilon 0.41
+Episode 89 Score: 27.00 Average Score: 39.63 Epsilon 0.41
+Episode 90 Score: 54.00 Average Score: 39.79 Epsilon 0.40
+Episode 91 Score: 25.00 Average Score: 39.63 Epsilon 0.40
+Episode 92 Score: 53.00 Average Score: 39.77 Epsilon 0.40
+Episode 93 Score: 47.00 Average Score: 39.85 Epsilon 0.39
+Episode 94 Score: 39.00 Average Score: 39.84 Epsilon 0.39
+Episode 95 Score: 17.00 Average Score: 39.60 Epsilon 0.38
+Episode 96 Score: 34.00 Average Score: 39.54 Epsilon 0.38
+Episode 97 Score: 26.00 Average Score: 39.40 Epsilon 0.38
+Episode 98 Score: 28.00 Average Score: 39.29 Epsilon 0.37
+Episode 99 Score: 25.00 Average Score: 39.14 Epsilon 0.37
+Episode 100 Score: 49.00 Average Score: 39.24 Epsilon 0.37
+Plotted learning curve!
+plotted social metrics!
+Started gif saving threads
+Episode 101 Score: 33.00 Average Score: 39.42 Epsilon 0.36
+Episode 102 Score: 36.00 Average Score: 39.57 Epsilon 0.36
+Episode 103 Score: 23.00 Average Score: 39.57 Epsilon 0.36
+Saved gif!

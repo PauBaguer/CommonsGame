@@ -37,7 +37,7 @@ class SocialMetrics:
     def compute_sustainability(self):
         times = 0
         for i in range(len(self.rewards)):
-            ts = np.array([1 for r in self.rewards[i] if r > 0]) * i
+            ts = np.array(self.rewards[i]) * i
             sum_t = np.sum(ts)
             times += sum_t
 

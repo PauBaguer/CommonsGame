@@ -4,7 +4,7 @@ import os
 from models.DDQN import Agent
 import gym
 import numpy as np
-from libs.utils import plot_learning_curve, save_frames_as_gif, save_observations_as_gif, plot_social_metrics
+from libs.utils import plot_learning_curve, save_frames_as_gif_big_map, save_observations_as_gif, plot_social_metrics
 from CommonsGame.constants import *
 import threading
 from libs.socialmetrics import SocialMetrics
@@ -23,7 +23,7 @@ def fill_initial_replay_memory(env, initial_memory, agents, numAgents):
                 observation = observations[ag]
                 agent = agents[ag]
                 if type(observation) == type(None):
-                    action = -1
+                    action = 6
                 else:
                     action = np.random.choice(agent.action_space)
                 actions.append(action)
@@ -35,7 +35,8 @@ def fill_initial_replay_memory(env, initial_memory, agents, numAgents):
                 if type(observations_[ag]) == type(None):
                     continue
                 if type(observations[ag]) == type(None):
-                    observation = np.copy(agent.state_memory[-1])
+                    observations[ag] = np.copy(agents[ag].ER.buffer[-1][0])
+
                 agents[ag].store_transition(observations[ag], actions[ag], rewards[ag], observations_[ag], done[ag])
 
             observations = observations_
@@ -45,7 +46,7 @@ def fill_initial_replay_memory(env, initial_memory, agents, numAgents):
 
 def handle_agent_choose_action(agent, observation):
     if type(observation) == type(None):
-        action = -1
+        action = 6
     else:
         action = agent.choose_action(observation)
     return action
@@ -55,8 +56,10 @@ def handle_agent_learn(agent, observation, observation_, action, reward, done):
     if type(observation_) == type(None):
         return
     if type(observation) == type(None):
-        observation = np.copy(agent.state_memory[-1])
+        observation = np.copy(agent.ER.buffer[-1][0])
 
+    if action == -1:
+        print()
     agent.store_transition(observation, action, reward, observation_, done)
     agent.learn()
 
@@ -85,7 +88,7 @@ def do_plots_and_gifs(base_path, episode, frames, obs, scores, eps_history, soci
     t2 = threading.Thread(target=save_observations_as_gif, name="Saving gif", args=(obs, path, filename_obs))
     t2.daemon = True
 
-    t = threading.Thread(target=save_frames_as_gif, name="Saving gif", args=(frames, t2, path, filename))
+    t = threading.Thread(target=save_frames_as_gif_big_map, name="Saving gif", args=(frames, t2, path, filename))
     t.daemon = True
     t.start()
 
@@ -142,19 +145,19 @@ def run_episode(base_path, episode, env, agents, numAgents, save_episodes_as_gif
         do_plots_and_gifs(base_path, episode, frames, obs, scores, eps_history, social_metrics_history)
 
 def main():
-    base_path = './ResultsDDQN_fc64_initial_mem_v2/single-agent'
+    base_path = './ResultsDDQN_fc64_initial_mem_v3/multi-agent'
     print(base_path)
     os.makedirs(base_path, exist_ok=True)
 
     # Hyperparameters
     n_episodes = 50050
-    save_episodes_as_gifs = [10, 100, 500, 750, 1000, 5000, 10000, 15000, 20000, 30000, 40000, 50000]
-    numAgents = 1
+    save_episodes_as_gifs = [1,10, 100, 500, 750, 1000, 5000, 10000, 15000, 20000, 30000, 40000, 50000]
+    numAgents = 12
     visualRadius = 5
     initial_memory = 50000
 
     input_dims = [visualRadius*2+1, visualRadius*2+1, 3]
-    env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=visualRadius, mapSketch=smallMapV2)#, mapSketch=smallMap)
+    env = gym.make('CommonsGame:CommonsGame-v0', numAgents=numAgents, visualRadius=visualRadius, mapSketch=bigMap)#, mapSketch=smallMap)
     gym.logger.setLevel(logging.CRITICAL)
     agents = [Agent(input_dims=input_dims, n_actions=8)
               for _ in range(numAgents)]

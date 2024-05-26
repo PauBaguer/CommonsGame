@@ -101,10 +101,10 @@ class CommonsGame(gym.Env):
             return board
 
     def getObservation(self):
-        if self.ticks < self.max_ticks:
-            done = not (np.logical_or.reduce(self.state.layers['@'], axis=None))
-        else:
+        done = False
+        if self.ticks == self.max_ticks-1:
             done = True
+
         ags = [self._game.things[c] for c in self.agentChars]
         obs = []
         board = self.obToImage(self.state)['RGB'].transpose([1, 2, 0])
