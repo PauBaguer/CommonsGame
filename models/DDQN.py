@@ -146,6 +146,7 @@ class Agent:
             self.optimizer.step()
 
             soft_update(self.Q_target, self.Q, 1e-3)
+            return loss.detach().cpu().numpy()
 
     def choose_action(self, state):
         if np.random.random() > self.epsilon:
